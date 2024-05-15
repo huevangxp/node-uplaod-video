@@ -21,7 +21,7 @@ exports.uplaod_video = async (req ,res)=>{
 
         const StorageRef = ref(storage, filename);
         const metaData = {
-            contenttype:'video/mp4'
+            contentType:'video/mp4'
         };
 
         uploadBytes(StorageRef, req.file.buffer, metaData)
