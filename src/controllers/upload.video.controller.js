@@ -7,12 +7,19 @@ exports.uplaod_video = async (req ,res)=>{
         const storage = getStorage()
 
         const video = req.file;
-
         if(!video){
             return res.status(400).json({message:'No file uploaded'})
         }
 
-        const StorageRef = ref(storage, req.file.originalname);
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+        const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}-${currentDate.getMinutes().toString().padStart(2, '0')}-${currentDate.getSeconds().toString().padStart(2, '0')}`;
+
+        // Generate the new filename
+        const originalname = req.file.originalname;
+        const filename = `${formattedDate}_${formattedTime}_${originalname}`;
+
+        const StorageRef = ref(storage, filename);
         const metaData = {
             contenttype:'video/mp4'
         };
