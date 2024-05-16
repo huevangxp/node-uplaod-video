@@ -56,3 +56,49 @@ exports.delete = async (req, res)=>{
         return res.status(500).json({message: 'SERVER ERROR', error: error.message})
     }
 }
+
+exports.findAll = async (req ,res)=>{
+    try{
+            const prodect = await Product.findAll();
+        if(!product){
+            return res.status(404).json({message: 'INVALID PRODUCT NO FOUND'})
+        }
+        return res.status(200).json(prodect);
+    }catch (e) {
+        return res.status(500).json({message: 'SERVER ERROR', error: e})
+    }
+}
+
+exports.findOne = async (req ,res)=>{
+    try{
+        const {id} = req.params;
+        if(!id){
+            return res.status(400).json({message:"INVALID PRODUCT ID"})
+        }
+        const product = await Product.findByPk(id);
+        if(!product){
+            return res.status(404).json({message:"INVALID PRODUCT ID"})
+        }
+        return res.status(200).json(product);
+    } catch (e) {
+        return res.status(500).json({message: 'SERVER ERROR', error: e})
+    }
+}
+
+exports.update = async (req ,res)=>{
+    try{
+        const {id} = req.params;
+        if(!id){
+            return res.status(400).json({message:"INVALID PRODUCT ID"})
+        }
+        //check product in database
+        const product = await Product.findByPk(id);
+        if(!product){
+            return res.status(404).json({message:"INVALID PRODUCT ID"})
+        }
+        await product.update(req.body);
+        return res.status(201).json({message:'UPDATED SUCCESS'})
+    }catch (e) {
+        return res.status(500).json({message: 'SERVER ERROR', error: e})
+    }
+}
