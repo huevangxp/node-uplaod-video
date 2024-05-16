@@ -32,6 +32,26 @@ exports.register = async (req, res) => {
 exports.login = async  (req, res) => {
     try {
 
+        const {username , password} = req.body;
+        if(!username || !password){
+            return res.status(400).json({message:"INVALID USER DATA"})
+        }
+
+        const user = await  User.findOne( { where : {username: username}} )
+        if(!user){
+            return res.status(404).json({message:"INVALID USER'})"})
+        }
+
+        const  checkpass = await  bcrypt.compare( password, user.password);
+    if(!checkpass){
+        return  res.status(200).json({message:"PASSWORD INCCORT"})
+    }
+    const data = {
+        username:user.username,
+        number: user.number
+    }
+    const token = await  jwt.sign(data, 'huevang-flutter', {expiresIn:'7d'})
+        return res.status(200).json({message:"LOGIN SUCCESS", token: token, data: data})
     }catch (e) {
         return res.status(500).json({message:"SERVER ERROR", error: e.message})
     }
@@ -63,5 +83,23 @@ exports.findOne = async (req, res)  => {
         return res.status(200).json({message:response})
     }catch (e) {
         return res.status(500).json({message:'SERVER ERROR', error: e.message})
+    }
+}
+
+exports.delete = async (req, res) => {
+    try {
+        const {id} = req.params;
+        if(!id){
+            return res.status(400).json({message: 'INVALID USER ID'})
+        }
+        const findUser = await  User.findByPk(id);
+
+        if(!findUser){
+            return res.status(404).json({message:"INVALID USER DATA"})
+        }
+        await findUser.destroy()
+        return res.status(201).json({message: 'DELETE USER SUCCESS'})
+    }catch (e) {
+        return res.status(500).json({message: 'SERVER ERROR', error: e.message})
     }
 }

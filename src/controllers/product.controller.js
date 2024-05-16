@@ -59,13 +59,13 @@ exports.delete = async (req, res)=>{
 
 exports.findAll = async (req ,res)=>{
     try{
-            const prodect = await Product.findAll();
+            const product = await Product.findAndCountAll();
         if(!product){
             return res.status(404).json({message: 'INVALID PRODUCT NO FOUND'})
         }
-        return res.status(200).json(prodect);
+        return res.status(200).json(product);
     }catch (e) {
-        return res.status(500).json({message: 'SERVER ERROR', error: e})
+        return res.status(500).json({message: 'SERVER ERROR', error: e.message})
     }
 }
 
